@@ -39,7 +39,7 @@ class Store:
 
         identity_cache_path = self.build_hash_path(identity_hash)
 
-        print("cache hit")
+        logger.info(f"Cache hit '{identity_hash}'")
 
         return json.loads(identity_cache_path.read_text())
 
