@@ -67,7 +67,7 @@ def mash(store: Optional[Store] = None) -> Callable[[Callable[P, R]], Callable[P
             identity = {
                 "arguments": args,
                 "keyword_arguments": kwargs,
-                "definition": inspect.getsourcelines(f),
+                "definition": inspect.getsourcelines(f)[0],
             }
 
             if store.exists(identity):
