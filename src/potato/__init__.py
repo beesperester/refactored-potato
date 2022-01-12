@@ -64,13 +64,10 @@ def mash(store: Optional[Store] = None) -> Callable[[Callable[P, R]], Callable[P
 
     def outer(f: Callable[P, R]) -> Callable[P, R]:
         def inner(*args: P.args, **kwargs: P.kwargs) -> R:
-            definition, *body = [x.strip() for x in inspect.getsourcelines(f)[0]]
-
             identity = {
                 "arguments": args,
                 "keyword_arguments": kwargs,
-                "definition": definition,
-                "body": body,
+                "definition": inspect.getsourcelines(f),
             }
 
             if store.exists(identity):
