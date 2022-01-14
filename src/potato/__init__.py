@@ -69,7 +69,11 @@ def mash(store: Optional[Store] = None) -> Callable[[Callable[P, R]], Callable[P
                 "keyword_arguments": {
                     key: serialize(value) for key, value in kwargs.items()
                 },
-                "definition": inspect.getsourcelines(f)[0],
+                "definition": [
+                    line
+                    for line in inspect.getsourcelines(f)[0]
+                    if not line.strip().startswith("#")
+                ],
             }
 
             if store.exists(identity):
