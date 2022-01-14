@@ -65,8 +65,10 @@ def mash(store: Optional[Store] = None) -> Callable[[Callable[P, R]], Callable[P
     def outer(f: Callable[P, R]) -> Callable[P, R]:
         def inner(*args: P.args, **kwargs: P.kwargs) -> R:
             identity = {
-                "arguments": args,
-                "keyword_arguments": kwargs,
+                "arguments": list(map(serialize, args)),
+                "keyword_arguments": {
+                    key: serialize(value) for key, value in kwargs.items()
+                },
                 "definition": inspect.getsourcelines(f)[0],
             }
 
@@ -82,6 +84,17 @@ def mash(store: Optional[Store] = None) -> Callable[[Callable[P, R]], Callable[P
         return inner
 
     return outer
+
+
+def serialize(arg: Any) -> Union[str, float, int, dict[str, Any], list[Any]]:
+    if isinstance(arg, list):
+        return list(map(serialize, arg))
+    elif isinstance(arg, dict):
+        return {key: serialize(value) for key, value in arg.items()}
+    elif isinstance(arg, (str, float, int)):
+        return arg
+
+    return str(arg)
 
 
 def hash_from_string(string: str) -> str:
